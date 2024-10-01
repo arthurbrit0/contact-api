@@ -2,8 +2,11 @@ import express from 'express';
 import dotenv from 'dotenv';
 import contatosRoutes from "./routes/contatosRoutes.js"
 import { errorHandler }from "./middleware/errorHandler.js"
+import { connectDb } from './config/dbConnection.js'
 
 dotenv.config();
+
+connectDb();
 
 const app = express();
 
