@@ -1,15 +1,15 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const { getContatos, getContato, criarContato, atualizarContato, deletarContato } = require("../controllers/contatoController")
+import { 
+    getContatos, 
+    getContato, 
+    criarContato,
+    atualizarContato, 
+    deletarContato 
+} from "../controllers/contatoController.js";
 
-router.route('/').get(getContatos)
+router.route('/').get(getContatos).post(criarContato)
 
-router.route('/:id').get(getContato)
+router.route('/:id').get(getContato).put(atualizarContato).delete(deletarContato)
 
-router.route('/').post(criarContato)
-
-router.route('/:id').put(atualizarContato)
-
-router.route('/:id').delete(deletarContato)
-
-module.exports = router;
+export default router;
