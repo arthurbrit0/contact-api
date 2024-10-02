@@ -1,4 +1,5 @@
 import express from 'express';
+
 const router = express.Router();
 import { 
     getContatos, 
@@ -7,6 +8,9 @@ import {
     atualizarContato, 
     deletarContato 
 } from "../controllers/contatoController.js";
+import validarToken from '../middleware/tokenValidoHandler.js';
+
+router.use(validarToken);
 
 router.route('/').get(getContatos).post(criarContato)
 

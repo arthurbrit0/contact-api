@@ -1,6 +1,11 @@
 import mongoose from 'mongoose';
 
 const contactSchema = mongoose.Schema({
+    id_usuario: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "User"
+    },
     nome: {
         type: String,
         required: [true, "O nome é obrigatório"],
@@ -19,6 +24,6 @@ const contactSchema = mongoose.Schema({
 }
 );
 
-const Contato = mongoose.model("Contato", contactSchema);
+const Contact = mongoose.model("Contact", contactSchema);
 
-export default Contato;
+export default Contact;

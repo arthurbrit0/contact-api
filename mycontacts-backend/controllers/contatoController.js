@@ -3,16 +3,16 @@ import Contact from '../models/contactModel.js'
 
 //@desc Pegar todos os contatos
 //@route GET /api/contacts
-//@access public
+//@access private
 
 export const getContatos = asyncHandler(async (req, res) => {
-    const contacts = await Contact.find();
+    const contacts = await Contact.find({id_usuario: req.user.id});
     res.status(200).json(contacts)
 });
 
 //@desc Criar novo contato
 //@route POST /api/contacts
-//@access public
+//@access private
 
 export const criarContato = asyncHandler(async (req, res) => {
     const {nome, email, telefone} = req.body;
@@ -23,7 +23,8 @@ export const criarContato = asyncHandler(async (req, res) => {
     const contact = await Contact.create({
         nome,
         email,
-        telefone
+        telefone,
+        id_usuario: req.user.id
     })
 
     res.status(200).json(contact)
@@ -31,7 +32,7 @@ export const criarContato = asyncHandler(async (req, res) => {
 
 //@desc Pegarum contato especifico
 //@route GET /api/contacts/:id
-//@access public
+//@access private
 
 export const getContato = asyncHandler(async (req, res) => {
     const contact = await Contact.findById(req.params.id)
@@ -45,13 +46,18 @@ export const getContato = asyncHandler(async (req, res) => {
 
 //@desc Atualizar um contato específico
 //@route PUT /api/contacts/:id
-//@access public
+//@access private
 
 export const atualizarContato = asyncHandler(async (req, res) => {
     const contact = await Contact.findById(req.params.id)
     if (!contact) {
         res.status(404);
         throw new Error ("Contato não encontrado!");
+    }
+
+    if(contact.id_usuario.toString() !== req.user.id) {
+        res.status(403);
+        throw new Error("Usuário não tem permissão para alterar dados de outro usuário")
     }
 
     const updatedContact = await Contact.findByIdAndUpdate(
@@ -73,6 +79,11 @@ export const deletarContato = asyncHandler(async (req, res) => {
         throw new Error ("Contato não encontrado!");
     }
 
-    await Contact.findByIdAndDelete(req.params.id)
+    if(contact.id_usuario.toString() !== req.user.id) {
+        res.status(403);
+        throw new Error("Usuário não tem permissão para alterar dados de outro usuário")
+    }
+
+    await Contact.deleteOne({ _id: req.params.id})
     res.status(200).json(contact)
 });
